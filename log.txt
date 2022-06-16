@@ -1,0 +1,12 @@
+URL/documentation
+Timestamp: Thu Jun 16 2022 13:07:10 GMT-0700 (Pacific Daylight Time)
+
+URL/js/scripts.js
+Timestamp: Thu Jun 16 2022 13:07:10 GMT-0700 (Pacific Daylight Time)
+
+URL/css/styles.css
+Timestamp: Thu Jun 16 2022 13:07:10 GMT-0700 (Pacific Daylight Time)
+
+URL/favicon.ico
+Timestamp: Thu Jun 16 2022 13:07:10 GMT-0700 (Pacific Daylight Time)
+
