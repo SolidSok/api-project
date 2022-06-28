@@ -10,12 +10,137 @@
     <div>
       <h1>Documentation</h1>
       <p>
-        Lorem ipsum dolor sit amet consectetur adipisicing elit. Nisi quidem
-        veniam ex perferendis ea eligendi consequatur placeat repudiandae
-        suscipit voluptas perspiciatis delectus hic qui, officia assumenda
-        dolorem recusandae, dolorum nostrum.
+        This project is an API that will provide users with information about
+        different movies.
       </p>
     </div>
+    <h2>URL endpoints and request methods</h2>
+    <table>
+      <thead>
+        <tr>
+          <th class="column">Request</th>
+          <th class="column">Endpoint URL</th>
+          <th class="column">HTTP Method</th>
+          <th class="column">Query parameters</th>
+          <th class="column">Request body data format</th>
+          <th class="column">Response body data format</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td class="column">Return list of all movies</td>
+          <td class="column">/movies</td>
+          <td class="column">GET</td>
+          <td class="column">None</td>
+          <td class="column">None</td>
+          <td class="column">
+            JSON object holding data about all movies<br /><b>Example:</b>
+            [{"title": "Your Name", "year": 2016, "genre": "Drama", "director":
+            "Makoto Shinkai"}, {...}, ...]
+          </td>
+        </tr>
+        <tr>
+          <td class="column">Return info about specific movie by title</td>
+          <td class="column">/movies/[title]</td>
+          <td class="column">GET</td>
+          <td class="column">:title</td>
+          <td class="column">None</td>
+          <td class="column">
+            JSON object holding data about requested movie <br /><b>Example:</b>
+            {"title": "Your Name", "year": 2016, "genre": "Drama", "director":
+            "Makoto Shinkai"}
+          </td>
+        </tr>
+        <tr>
+          <td class="column">Return info about a genre</td>
+          <td class="column">/genres/[genre]</td>
+          <td class="column">GET</td>
+          <td class="column">:genre</td>
+          <td class="column">None</td>
+          <td class="column">
+            JSON object holding data about requested genre<br /><b>Example:</b>
+            Relationships and character development
+          </td>
+        </tr>
+        <tr>
+          <td class="column">Return info about a director by name</td>
+          <td class="column">/directors/[name]</td>
+          <td class="column">GET</td>
+          <td class="column">:director</td>
+          <td class="column">None</td>
+          <td class="column">
+            JSON object holding data about requested director<br /><b
+              >Example:</b
+            >
+            name: 'Makoto Shinkai', bio: 'Makoto Shinkai was born on February 9,
+            1973. He is a Japanese animator, fimlmaker, author, and manga
+            artist.',
+          </td>
+        </tr>
+        <tr>
+          <td class="column">Add new user</td>
+          <td class="column">/users</td>
+          <td class="column">POST</td>
+          <td class="column">:users</td>
+          <td class="column">
+            JSON object holding user data<br /><b>Example:</b> { "name":
+            "Glacies", "favoriteMovies": ["Your Name", "A Silent Voice"] }
+          </td>
+          <td class="column">
+            JSON object holding the new user's data<br /><b>Example:</b> {
+            "name": "Glacies", "favoriteMovies": [ "Your Name", "A Silent Voice"
+            ], "id": "78e4d77e-30ff-4c58-9b06-2aca86dad150" }
+          </td>
+        </tr>
+        <tr>
+          <td class="column">Update user name</td>
+          <td class="column">/users/[id]</td>
+          <td class="column">PUT</td>
+          <td class="column">:id</td>
+          <td class="column">
+            JSON object holding new user's name<br /><b>Example:</b> { "name":
+            "Astrid" }'
+          </td>
+          <td class="column">
+            JSON object holding the new user's data<br /><b>Example:</b> { id:
+            1, name: 'Astrid', favoriteMovies: ['A Silent Voice'], }
+          </td>
+        </tr>
+        <tr>
+          <td class="column">Add a movie to a user's list of favorites</td>
+          <td class="column">/users/[id]/[movieTitle]</td>
+          <td class="column">PUT</td>
+          <td class="column">:id, :title</td>
+          <td class="column">None</td>
+          <td class="column">
+            text output confirming requested action<br /><b>Example:</b> "Summer
+            Wars has been added to user 2's array."
+          </td>
+        </tr>
+        <tr>
+          <td class="column">Remove a movie from a user's list of favorites</td>
+          <td class="column">/users/[id]/[movieTitle]</td>
+          <td class="column">DELETE</td>
+          <td class="column">:id, :title</td>
+          <td class="column">None</td>
+          <td class="column">
+            text output confirming requested action<br /><b>Example:</b>
+            "Wolf Children has been removed from user 4's array."
+          </td>
+        </tr>
+        <tr>
+          <td class="column">Delete user</td>
+          <td class="column">/users/[id]</td>
+          <td class="column">DELETE</td>
+          <td class="column">:id</td>
+          <td class="column">None</td>
+          <td class="column">
+            text output confirming requested action<br /><b>Example:</b> "User 1
+            has been deleted."
+          </td>
+        </tr>
+      </tbody>
+    </table>
     <script src="js/scripts.js"></script>
   </body>
 </html>
