@@ -40,6 +40,34 @@
           </td>
         </tr>
         <tr>
+          <td class="column">Return list of movies by a certain director</td>
+          <td class="column">/movies/directors/[name]</td>
+          <td class="column">GET</td>
+          <td class="column">:name</td>
+          <td class="column">None</td>
+          <td class="column">
+            JSON object holding data movies from a specific director<br /><b
+              >Example:</b
+            >
+            [{"title": "Your Name", "genre": "Drama", "director": "Makoto
+            Shinkai"}, {"Title": "Weathering with You".......}, ...]
+          </td>
+        </tr>
+        <tr>
+          <td class="column">Return list of movies by a certain genre</td>
+          <td class="column">/movies/genres/[name]</td>
+          <td class="column">GET</td>
+          <td class="column">:name</td>
+          <td class="column">None</td>
+          <td class="column">
+            JSON object holding data movies from a specific genre<br /><b
+              >Example:</b
+            >
+            [{"title": "Your Name", "genre": "Drama", "director": "Makoto
+            Shinkai"}, {"Title": "Weathering with You".......}, ...]
+          </td>
+        </tr>
+        <tr>
           <td class="column">Return info about specific movie by title</td>
           <td class="column">/movies/[title]</td>
           <td class="column">GET</td>
