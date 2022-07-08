@@ -3,7 +3,17 @@ const bodyParser = require('body-parser'),
   morgan = require('morgan'),
   fs = require('fs'),
   path = require('path'),
-  uuid = require('uuid');
+  uuid = require('uuid'),
+  mongoose = require('mongoose'),
+  Models = require('./models.js');
+
+const Movies = Models.Movie;
+const Users = Models.User;
+
+mongoose.connect('mongodb://localhost:27017/sokFlixDB', {
+  useNewUrlParser: true,
+  useUnifiedTopology: true,
+});
 
 const app = express();
 const accessLogStream = fs.createWriteStream(path.join(__dirname, 'log.txt'), {
@@ -18,224 +28,152 @@ app.use(bodyParser.json());
 // static file
 app.use(express.static('public'));
 
-let users = [
-  {
-    id: 1,
-    name: 'Amy',
-    favoriteMovies: ['A Silent Voice'],
-  },
-  {
-    id: 2,
-    name: 'Bob',
-    favoriteMovies: [],
-  },
-  {
-    id: 3,
-    name: 'Cessei',
-    favoriteMovies: ['Weathering with You', 'Your Name'],
-  },
-];
-
-let movies = [
-  {
-    title: 'Weathering with You',
-    year: '2019',
-    genre: {
-      name: 'Drama',
-      description: 'Relationships and character development',
-    },
-    director: {
-      name: 'Makoto Shinkai',
-      bio: 'Makoto Shinkai was born on February 9, 1973. He is a Japanese animator, fimlmaker, author, and manga artist.',
-    },
-    img: '',
-  },
-  {
-    title: 'Your Name',
-    year: '2016',
-    genre: {
-      name: 'Drama',
-      description: 'Relationships and character development',
-    },
-    director: {
-      name: 'Makoto Shinkai',
-      bio: 'Makoto Shinkai was born on February 9, 1973. He is a Japanese animator, fimlmaker, author, and manga artist.',
-    },
-    img: '',
-  },
-  {
-    title: 'A Silent Voice',
-    year: '2016',
-    genre: {
-      name: 'Drama',
-      description: 'Relationships and character development',
-    },
-    director: {
-      name: 'Naoko Yamada',
-      bio: 'Naoko Yamada was born no November 28, 1984. She is a Japanese animator, television and film director.',
-    },
-    img: '',
-  },
-  {
-    title: 'Spirirted Away',
-    year: '2001',
-    genre: {
-      name: 'Fantasy',
-      description: 'A world unlike ours',
-    },
-    director: {
-      name: 'Hayao Miyazaki',
-      bio: "Hayao Miyazaki, born January 5, 1941, is one of Japan's greatest animation directors.",
-    },
-    img: '',
-  },
-  {
-    title: 'Summer Wars',
-    year: '2009',
-    genre: {
-      name: 'Drama',
-      description: 'Relationships and character development',
-    },
-    director: {
-      name: 'Mamoru Hosoda',
-      bio: 'Mamoru Hosoda was born on September 19, 1967. He is a Japanese film director and animator.',
-    },
-    img: '',
-  },
-  {
-    title: 'Wolf Children',
-    year: '2012',
-    genre: {
-      name: 'Drama',
-      description: 'Relationships and character development',
-    },
-    director: {
-      name: 'Mamoru Hosoda',
-      bio: 'Mamoru Hosoda was born on September 19, 1967. He is a Japanese film director and animator.',
-    },
-    img: '',
-  },
-  {
-    title: 'Persona 3 The Movie: #4 Winter of Rebirth',
-    year: '2016',
-    genre: {
-      name: 'Action',
-      description: 'Cool and intense scenes',
-    },
-    director: {
-      name: 'Tomohisa Taguchi',
-      bio: 'unknown',
-    },
-    img: '',
-  },
-  {
-    title: "Howl's Moving Castle",
-    year: '2004',
-    genre: {
-      name: 'Adventure',
-      description: 'Discovering new things',
-    },
-    director: {
-      name: 'Hayao Miyazaki',
-      bio: "Hayao Miyazaki, born January 5, 1941, is one of Japan's greatest animation directors.",
-    },
-    img: '',
-  },
-  {
-    title: 'Independence Day',
-    year: '1996',
-    genre: {
-      name: 'Sci-Fi',
-      description: 'Advanced technology and space',
-    },
-    director: {
-      name: 'Roland Emmerich',
-      bio: 'Roland Emmerich was born on November 10, 1955. He is a German film director and producer.',
-    },
-    img: '',
-  },
-  {
-    title: 'The Dark Knight',
-    year: '2008',
-    genre: {
-      name: 'Action',
-      description: 'Cool and intense scenes',
-    },
-    director: {
-      name: 'Christopher Nolan',
-      bio: 'Christopher Nolan was born on July 30, 1970 in London, England, UK.',
-    },
-    img: '',
-  },
-];
-
-// CREATE new users
+//Add a user
+/* We’ll expect JSON in this format
+{
+  ID: Integer,
+  Username: String,
+  Password: String,
+  Email: String,
+  Birthday: Date
+}*/
 app.post('/users', (req, res) => {
-  const newUser = req.body;
-
-  if (newUser.name) {
-    newUser.id = uuid.v4();
-    users.push(newUser);
-    res.status(201).json(newUser);
-  } else {
-    res.status(400).send('users need names');
-  }
+  Users.findOne({ Username: req.body.Username })
+    .then((user) => {
+      if (user) {
+        return res.status(400).send(req.body.Username + 'already exists');
+      } else {
+        Users.create({
+          Username: req.body.Username,
+          Password: req.body.Password,
+          Email: req.body.Email,
+          Birthday: req.body.Birthday,
+        })
+          .then((user) => {
+            res.status(201).json(user);
+          })
+          .catch((error) => {
+            console.error(error);
+            res.status(500).send('Error: ' + error);
+          });
+      }
+    })
+    .catch((error) => {
+      console.error(error);
+      res.status(500).send('Error ' + error);
+    });
 });
 
-// UPDATE user's name
-app.put('/users/:id', (req, res) => {
-  const { id } = req.params;
-  const updatedUser = req.body;
-
-  let user = users.find((user) => user.id == id);
-
-  if (user) {
-    user.name = updatedUser.name;
-    res.status(200).json(user);
-  } else {
-    res.status(400).send('no such user');
-  }
+// Get all users
+app.get('/users', (req, res) => {
+  Users.find()
+    .then((users) => {
+      res.status(201).json(users);
+    })
+    .catch((err) => {
+      console.error(err);
+      res.status(500).send('Error: ' + err);
+    });
 });
 
-// DELETE remove users
-app.delete('/users/:id', (req, res) => {
-  const { id } = req.params;
-
-  let user = users.find((user) => user.id == id);
-  if (user) {
-    users = users.filter((user) => user.id != id);
-    res.status(200).send(`user ${id} has been deleted`);
-  } else {
-    res.status(400).send('no such user');
-  }
+// Get a user by username
+app.get('/users/:Username', (req, res) => {
+  Users.findOne({ Username: req.params.Username })
+    .then((user) => {
+      res.json(user);
+    })
+    .catch((err) => {
+      console.error(err);
+      res.status(500).send('Error: ' + err);
+    });
 });
 
-// CREATE add movies to users' arrays
-app.post('/users/:id/:movieTitle', (req, res) => {
-  const { id, movieTitle } = req.params;
+// Update a user's info, by username
+/* We’ll expect JSON in this format
+{
+  Username: String,
+  (required)
+  Password: String,
+  (required)
+  Email: String,
+  (required)
+  Birthday: Date
+}*/
+app.put('/users/:Username', (req, res) => {
+  Users.findOneAndUpdate(
+    { Username: req.params.Username },
+    {
+      $set: {
+        Username: req.body.Username,
+        Password: req.body.Password,
+        Email: req.body.Email,
+        Birthday: req.body.Birthday,
+      },
+    },
+    { new: true }, // This line makes sure that the updated document is returned
+    (err, updatedUser) => {
+      if (err) {
+        console.error(err);
+        res.status(500).send('Error: ' + err);
+      } else {
+        res.json(updatedUser);
+      }
+    }
+  );
+});
 
-  let user = users.find((user) => user.id == id);
-  if (user) {
-    user.favoriteMovies.push(movieTitle);
-    res.status(200).send(`${movieTitle} has been added to user ${id}'s array`);
-  } else {
-    res.status(400).send('no such user');
-  }
+// Delete a user by username
+app.delete('/users/:Username', (req, res) => {
+  Users.findOneAndRemove({ Username: req.params.Username })
+    .then((user) => {
+      if (!user) {
+        res.status(400).send(req.params.Username + ' was not found');
+      } else {
+        res.status(200).send(req.params.Username + ' was deleted.');
+      }
+    })
+    .catch((err) => {
+      console.error(err);
+      res.status(500).send('Error: ' + err);
+    });
+});
+
+// Add a movie to a user's list of favorites
+app.post('/users/:Username/movies/:MovieID', (req, res) => {
+  Users.findOneAndUpdate(
+    { Username: req.params.Username },
+    {
+      $push: { FavoriteMovies: req.params.MovieID },
+    },
+    { new: true }, // This line makes sure that the updated document is returned
+    (err, updatedUser) => {
+      if (err) {
+        console.error(err);
+        res.status(500).send('Error: ' + err);
+      } else {
+        res.json(updatedUser);
+      }
+    }
+  );
 });
 
 // DELETE remove movies from users' arrays
-app.delete('/users/:id/:movieTitle', (req, res) => {
-  const { id, movieTitle } = req.params;
-
-  let user = users.find((user) => user.id == id);
-  if (user) {
-    user.favoriteMovies.filter((title) => title !== movieTitle);
-    res
-      .status(200)
-      .send(`${movieTitle} has been removed from user ${id}'s array`);
-  } else {
-    res.status(400).send('no such user');
-  }
+app.delete('/users/:Username/movies/:MovieID', (req, res) => {
+  Users.findOneAndUpdate(
+    { Username: req.params.Username },
+    {
+      $pull: { FavoriteMovies: req.params.MovieID },
+    },
+    { new: true }, // This line makes sure that the updated document is returned
+    (err, updatedUser) => {
+      if (err) {
+        console.error(err);
+        res.status(500).send('Error: ' + err);
+      } else {
+        res.json(updatedUser);
+      }
+    }
+  );
 });
 
 // READ default page
@@ -243,47 +181,52 @@ app.get('/', (req, res) => {
   res.send("Welcome! You're on the front page!");
 });
 
-// READ movies page
+// Get all movies
 app.get('/movies', (req, res) => {
-  res.status(200).json(movies);
+  Movies.find()
+    .then((movies) => {
+      res.status(201).json(movies);
+    })
+    .catch((err) => {
+      console.error(err);
+      res.status(500).send('Error: ' + err);
+    });
 });
 
 // READ movies by title
 app.get('/movies/:title', (req, res) => {
-  const { title } = req.params;
-  const movie = movies.find((movie) => movie.title === title);
-
-  if (movie) {
-    res.status(200).json(movie);
-  } else {
-    res.status(400).send('no such movie');
-  }
+  Movies.findOne({ Title: req.params.title })
+    .then((movie) => {
+      res.json(movie);
+    })
+    .catch((err) => {
+      console.error(err);
+      res.status(500).send('Error: ' + err);
+    });
 });
 
 // READ movies by genre
-app.get('/movies/genre/:genreName', (req, res) => {
-  const { genreName } = req.params;
-  const genre = movies.find((movie) => movie.genre.name === genreName).genre;
-
-  if (genre) {
-    res.status(200).json(genre);
-  } else {
-    res.status(400).send('no such genre');
-  }
+app.get('/movies/genre/:name', (req, res) => {
+  Movies.find({ 'Genre.Name': req.params.name })
+    .then((genre) => {
+      res.json(genre);
+    })
+    .catch((err) => {
+      console.error(err);
+      res.status(500).send('Error: ' + err);
+    });
 });
 
-// READ movie director
-app.get('/movies/directors/:directorName', (req, res) => {
-  const { directorName } = req.params;
-  const director = movies.find(
-    (movie) => movie.director.name === directorName
-  ).director;
-
-  if (director) {
-    res.status(200).json(director);
-  } else {
-    res.status(400).send('no such director');
-  }
+// READ movies by director
+app.get('/movies/directors/:name', (req, res) => {
+  Movies.find({ 'Director.Name': req.params.name })
+    .then((director) => {
+      res.json(director);
+    })
+    .catch((err) => {
+      console.error(err);
+      res.status(500).send('Error: ' + err);
+    });
 });
 
 // READ send to documentation

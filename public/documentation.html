@@ -87,19 +87,20 @@
             "Glacies", "favoriteMovies": ["Your Name", "A Silent Voice"] }
           </td>
           <td class="column">
-            JSON object holding the new user's data<br /><b>Example:</b> {
-            "name": "Glacies", "favoriteMovies": [ "Your Name", "A Silent Voice"
-            ], "id": "78e4d77e-30ff-4c58-9b06-2aca86dad150" }
+            JSON object holding the new user's data(Username, password, and
+            email are required)<br /><b>Example:</b> { "Username": "Glacies",
+            "Password":"password123","Email":"glacies@gmail.com", "Birthday":
+            "1991-02-11", "favoriteMovies": [ "Your Name", "A Silent Voice" ]}
           </td>
         </tr>
         <tr>
-          <td class="column">Update user name</td>
-          <td class="column">/users/[id]</td>
+          <td class="column">Update user information</td>
+          <td class="column">/users/[Username]</td>
           <td class="column">PUT</td>
           <td class="column">:id</td>
           <td class="column">
-            JSON object holding new user's name<br /><b>Example:</b> { "name":
-            "Astrid" }'
+            JSON object holding new user's info<br /><b>Example:</b> { Username:
+            String, Password: String, Email: String, Birthday: Date }
           </td>
           <td class="column">
             JSON object holding the new user's data<br /><b>Example:</b> { id:
@@ -108,9 +109,9 @@
         </tr>
         <tr>
           <td class="column">Add a movie to a user's list of favorites</td>
-          <td class="column">/users/[id]/[movieTitle]</td>
+          <td class="column">/users/[Username]/movies/[movieID]</td>
           <td class="column">PUT</td>
-          <td class="column">:id, :title</td>
+          <td class="column">:Username, :MovieID</td>
           <td class="column">None</td>
           <td class="column">
             text output confirming requested action<br /><b>Example:</b> "Summer
@@ -119,9 +120,9 @@
         </tr>
         <tr>
           <td class="column">Remove a movie from a user's list of favorites</td>
-          <td class="column">/users/[id]/[movieTitle]</td>
+          <td class="column">/users/[Username]/movies/[MovieID]</td>
           <td class="column">DELETE</td>
-          <td class="column">:id, :title</td>
+          <td class="column">:Username, :MovieID</td>
           <td class="column">None</td>
           <td class="column">
             text output confirming requested action<br /><b>Example:</b>
@@ -130,9 +131,9 @@
         </tr>
         <tr>
           <td class="column">Delete user</td>
-          <td class="column">/users/[id]</td>
+          <td class="column">/users/[Username]</td>
           <td class="column">DELETE</td>
-          <td class="column">:id</td>
+          <td class="column">:Username</td>
           <td class="column">None</td>
           <td class="column">
             text output confirming requested action<br /><b>Example:</b> "User 1
