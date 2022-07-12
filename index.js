@@ -6,8 +6,7 @@ const bodyParser = require('body-parser'),
   uuid = require('uuid'),
   mongoose = require('mongoose'),
   Models = require('./models.js'),
-  { check, validationResult } = require('express-validator'),
-
+  { check, validationResult } = require('express-validator');
 
 const Movies = Models.Movie;
 const Users = Models.User;
