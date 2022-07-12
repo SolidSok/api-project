@@ -12,10 +12,14 @@ const Movies = Models.Movie;
 const Users = Models.User;
 const Directors = Models.Director;
 
-mongoose.connect('mongodb://localhost:27017/sokFlixDB', {
+mongoose.connect(process.env.CONNECTION_URI, {
   useNewUrlParser: true,
   useUnifiedTopology: true,
 });
+// mongoose.connect('mongodb://localhost:27017/sokFlixDB', {
+//   useNewUrlParser: true,
+//   useUnifiedTopology: true,
+// });
 
 const app = express();
 app.use(bodyParser.json());
@@ -247,13 +251,29 @@ app.post(
 app.put(
   '/users/:Username',
   passport.authenticate('jwt', { session: false }),
+  [
+    check('Username', 'Username is required').isLength({ min: 5 }),
+    check(
+      'Username',
+      'Username contains non alphanumeric characters - not allowed.'
+    ).isAlphanumeric(),
+    check('Password', 'Password is required').not().isEmpty(),
+    check('Email', 'Email does not appear to be valid').isEmail(),
+  ],
   (req, res) => {
+    let errors = validationResult(req);
+
+    if (!errors.isEmpty()) {
+      return res.status(422).json({ errors: errors.array() });
+    }
+
+    let hashedPassword = Users.hashPassword(req.body.Password);
     Users.findOneAndUpdate(
       { Username: req.params.Username },
       {
         $set: {
           Username: req.body.Username,
-          Password: req.body.Password,
+          Password: hashedPassword,
           Email: req.body.Email,
           Birthday: req.body.Birthday,
         },
