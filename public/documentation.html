@@ -80,32 +80,6 @@
           </td>
         </tr>
         <tr>
-          <td class="column">Return info about a genre</td>
-          <td class="column">/genres/[genre]</td>
-          <td class="column">GET</td>
-          <td class="column">:genre</td>
-          <td class="column">None</td>
-          <td class="column">
-            JSON object holding data about requested genre<br /><b>Example:</b>
-            Relationships and character development
-          </td>
-        </tr>
-        <tr>
-          <td class="column">Return info about a director by name</td>
-          <td class="column">/directors/[name]</td>
-          <td class="column">GET</td>
-          <td class="column">:director</td>
-          <td class="column">None</td>
-          <td class="column">
-            JSON object holding data about requested director<br /><b
-              >Example:</b
-            >
-            name: 'Makoto Shinkai', bio: 'Makoto Shinkai was born on February 9,
-            1973. He is a Japanese animator, fimlmaker, author, and manga
-            artist.',
-          </td>
-        </tr>
-        <tr>
           <td class="column">Add new user</td>
           <td class="column">/users</td>
           <td class="column">POST</td>
@@ -138,7 +112,7 @@
         <tr>
           <td class="column">Add a movie to a user's list of favorites</td>
           <td class="column">/users/[Username]/movies/[movieID]</td>
-          <td class="column">PUT</td>
+          <td class="column">Post</td>
           <td class="column">:Username, :MovieID</td>
           <td class="column">None</td>
           <td class="column">
