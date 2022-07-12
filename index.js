@@ -10,7 +10,6 @@ const bodyParser = require('body-parser'),
 
 const Movies = Models.Movie;
 const Users = Models.User;
-const Directors = Models.Director;
 
 mongoose.connect(process.env.CONNECTION_URI, {
   useNewUrlParser: true,
