@@ -10,6 +10,8 @@ const bodyParser = require('body-parser'),
 
 const Movies = Models.Movie;
 const Users = Models.User;
+const Directors = Models.Director;
+const Genres = Models.Genre;
 
 mongoose.connect(process.env.CONNECTION_URI, {
   useNewUrlParser: true,
@@ -126,6 +128,38 @@ app.get(
     Movies.find({ 'Director.Name': req.params.name })
       .then((director) => {
         res.json(director);
+      })
+      .catch((err) => {
+        console.error(err);
+        res.status(500).send('Error: ' + err);
+      });
+  }
+);
+
+// get director page
+app.get(
+  '/directors/:name',
+  passport.authenticate('jwt', { session: false }),
+  (req, res) => {
+    Directors.find({ Name: req.params.name })
+      .then((director) => {
+        res.json(director);
+      })
+      .catch((err) => {
+        console.error(err);
+        res.status(500).send('Error: ' + err);
+      });
+  }
+);
+
+//get genre page
+app.get(
+  '/genres/:name',
+  passport.authenticate('jwt', { session: false }),
+  (req, res) => {
+    Genres.find({ Name: req.params.name })
+      .then((user) => {
+        res.json(user);
       })
       .catch((err) => {
         console.error(err);
