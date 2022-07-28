@@ -27,7 +27,11 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
 const cors = require('cors');
-let allowedOrigins = ['http://localhost:8080', 'http://testsite.com', 'http://localhost:1234'];
+let allowedOrigins = [
+  'http://localhost:8080',
+  'http://localhost:1234',
+  'https://m.media.amazon.com',
+];
 
 app.use(
   cors({
@@ -75,6 +79,7 @@ app.get('/', (req, res) => {
 // Get all movies
 app.get(
   '/movies',
+  passport.authenticate('jwt', { session: false }),
   (req, res) => {
     Movies.find()
       .then((movies) => {
@@ -273,16 +278,6 @@ app.post(
 );
 
 // Update a user's info, by username
-/* We’ll expect JSON in this format
-{
-  Username: String,
-  (required)
-  Password: String,
-  (required)
-  Email: String,
-  (required)
-  Birthday: Date
-}*/
 app.put(
   '/users/:Username',
   passport.authenticate('jwt', { session: false }),
