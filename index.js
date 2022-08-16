@@ -82,10 +82,10 @@ app.get(
   passport.authenticate('jwt', { session: false }),
   (req, res) => {
     Movies.find()
-      .then((movies) => {
+      .then(movies => {
         res.status(201).json(movies);
       })
-      .catch((err) => {
+      .catch(err => {
         console.error(err);
         res.status(500).send('Error: ' + err);
       });
@@ -98,10 +98,10 @@ app.get(
 
   (req, res) => {
     Movies.findOne({ Title: req.params.title })
-      .then((movie) => {
+      .then(movie => {
         res.json(movie);
       })
-      .catch((err) => {
+      .catch(err => {
         console.error(err);
         res.status(500).send('Error: ' + err);
       });
@@ -110,14 +110,14 @@ app.get(
 
 // READ movies by genre
 app.get(
-  '/movies/genre/:name',
+  '/genre/:name',
   passport.authenticate('jwt', { session: false }),
   (req, res) => {
     Movies.find({ 'Genre.Name': req.params.name })
-      .then((genre) => {
+      .then(genre => {
         res.json(genre);
       })
-      .catch((err) => {
+      .catch(err => {
         console.error(err);
         res.status(500).send('Error: ' + err);
       });
@@ -126,30 +126,30 @@ app.get(
 
 // READ movies by director
 app.get(
-  '/movies/directors/:name',
+  '/directors/:name',
   passport.authenticate('jwt', { session: false }),
   (req, res) => {
     Movies.find({ 'Director.Name': req.params.name })
-      .then((director) => {
+      .then(director => {
         res.json(director);
       })
-      .catch((err) => {
+      .catch(err => {
         console.error(err);
         res.status(500).send('Error: ' + err);
       });
   }
 );
 
-// get director page
+// get list of directors
 app.get(
-  '/directors/:name',
+  '/directors',
   passport.authenticate('jwt', { session: false }),
   (req, res) => {
-    Directors.find({ Name: req.params.name })
-      .then((director) => {
-        res.json(director);
+    Directors.find()
+      .then(directors => {
+        res.json(directors);
       })
-      .catch((err) => {
+      .catch(err => {
         console.error(err);
         res.status(500).send('Error: ' + err);
       });
@@ -158,14 +158,14 @@ app.get(
 
 //get genre page
 app.get(
-  '/genres/:name',
+  '/genres',
   passport.authenticate('jwt', { session: false }),
   (req, res) => {
-    Genres.find({ Name: req.params.name })
-      .then((user) => {
-        res.json(user);
+    Genres.find()
+      .then(genres => {
+        res.json(genres);
       })
-      .catch((err) => {
+      .catch(err => {
         console.error(err);
         res.status(500).send('Error: ' + err);
       });
@@ -178,10 +178,10 @@ app.get(
   passport.authenticate('jwt', { session: false }),
   (req, res) => {
     Users.find()
-      .then((users) => {
+      .then(users => {
         res.status(201).json(users);
       })
-      .catch((err) => {
+      .catch(err => {
         console.error(err);
         res.status(500).send('Error: ' + err);
       });
@@ -194,10 +194,10 @@ app.get(
   passport.authenticate('jwt', { session: false }),
   (req, res) => {
     Users.findOne({ Username: req.params.Username })
-      .then((user) => {
+      .then(user => {
         res.json(user);
       })
-      .catch((err) => {
+      .catch(err => {
         console.error(err);
         res.status(500).send('Error: ' + err);
       });
@@ -228,7 +228,7 @@ app.post(
 
     let hashedPassword = Users.hashPassword(req.body.Password);
     Users.findOne({ Username: req.body.Username })
-      .then((user) => {
+      .then(user => {
         if (user) {
           return res.status(400).send(req.body.Username + 'already exists');
         } else {
@@ -238,16 +238,16 @@ app.post(
             Email: req.body.Email,
             Birthday: req.body.Birthday,
           })
-            .then((user) => {
+            .then(user => {
               res.status(201).json(user);
             })
-            .catch((error) => {
+            .catch(error => {
               console.error(error);
               res.status(500).send('Error: ' + error);
             });
         }
       })
-      .catch((error) => {
+      .catch(error => {
         console.error(error);
         res.status(500).send('Error ' + error);
       });
@@ -327,14 +327,14 @@ app.delete(
   passport.authenticate('jwt', { session: false }),
   (req, res) => {
     Users.findOneAndRemove({ Username: req.params.Username })
-      .then((user) => {
+      .then(user => {
         if (!user) {
           res.status(400).send(req.params.Username + ' was not found');
         } else {
           res.status(200).send(req.params.Username + ' was deleted.');
         }
       })
-      .catch((err) => {
+      .catch(err => {
         console.error(err);
         res.status(500).send('Error: ' + err);
       });
