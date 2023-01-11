@@ -32,6 +32,7 @@ let allowedOrigins = [
   'http://localhost:1234',
   'http://localhost:4200',
   'https://m.media.amazon.com',
+  'https://sokflix.netlify.app',
 ];
 
 app.use(
