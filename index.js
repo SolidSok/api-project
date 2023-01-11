@@ -32,10 +32,23 @@ let allowedOrigins = [
   'http://localhost:1234',
   'http://localhost:4200',
   'https://m.media.amazon.com',
-  'https://sokflix.netlify.app',
 ];
 
-app.use(cors());
+app.use(
+  cors({
+    origin: (origin, callback) => {
+      if (!origin) return callback(null, true);
+      if (allowedOrigins.indexOf(origin) === -1) {
+        // If a specific origin isn’t found on the list of allowed origins
+        let message =
+          'The CORS policy for this application doesn’t allow access from origin. ' +
+          origin;
+        return callback(new Error(message), false);
+      }
+      return callback(null, true);
+    },
+  })
+);
 
 let auth = require('./auth')(app);
 const passport = require('passport');
@@ -47,9 +60,6 @@ const accessLogStream = fs.createWriteStream(path.join(__dirname, 'log.txt'), {
 });
 app.use(morgan('common', { stream: accessLogStream }));
 
-/**
- * Serves static content for the app from the 'public' directory
- */
 // static file
 app.use(express.static('public'));
 
@@ -62,21 +72,11 @@ app.get(
   }
 );
 
-/**
- * GET: Returns welcome message fro '/' request URL
- * @returns Welcome message
- */
 // READ default page
 app.get('/', (req, res) => {
   res.send("Welcome! You're on the front page!");
 });
 
-/**
- * GET: returns a list of ALL movies to the user
- * Request body: Bearer Token
- * @returns array of movie objects
- * @ requires passport
- */
 // Get all movies
 app.get(
   '/movies',
@@ -93,13 +93,6 @@ app.get(
   }
 );
 
-/**
- * GET: Returns data (description, genre, director, image URL, whether it's featured or not) about a single movie by title to the user
- * REquest body: Bearer token
- * @param Title (of movie)
- * @returns movie object
- * @requires passport
- */
 // READ movies by title
 app.get(
   '/movies/:title',
@@ -116,13 +109,6 @@ app.get(
   }
 );
 
-/**
- * GET: Returns data about a genre (description) by name/title (e.g., "Fantasy")
- * Request body: Bearer token
- * @param Name (of genre)
- * @returns genre object
- * @requires passport
- */
 // READ movies by genre
 app.get(
   '/genre/:name',
@@ -139,13 +125,6 @@ app.get(
   }
 );
 
-/**
- * GET: Returns data about a director (bio, birth year) by name
- * Request body: Bearer token
- * @param Name (of director)
- * @returns director object
- * @requires passport
- */
 // READ movies by director
 app.get(
   '/directors/:name',
@@ -210,13 +189,6 @@ app.get(
   }
 );
 
-/**
- * GET: Returns data on a single user (user object) by username
- * Request body: Bearer token
- * @param Username
- * @returns user object
- * @requires passport
- */
 // Get a user by username
 app.get(
   '/users/:Username',
@@ -233,11 +205,6 @@ app.get(
   }
 );
 
-/**
- * POST: Allow new users to register, Username password & Email are required fields!
- * Request body: Bearer token, JSON with user information
- * @returns user object
- */
 // Create New User
 app.post(
   '/users',
@@ -288,14 +255,6 @@ app.post(
   }
 );
 
-/**
- * POST: Allows users to add a movie to their list of favorities
- * Request body: Bearer token
- * @param username
- * @param movieId
- * @returns user object
- * @requires passport
- */
 // Add a movie to a user's list of favorites
 app.post(
   '/users/:Username/movies/:MovieID',
@@ -319,13 +278,6 @@ app.post(
   }
 );
 
-/**
- * PUT: Allow users to update their user info (find by username)
- * Request body: Bearer token, updated user info
- * @param Username
- * @returns user object with updates
- * @requires passport
- */
 // Update a user's info, by username
 app.put(
   '/users/:Username',
@@ -370,13 +322,6 @@ app.put(
   }
 );
 
-/**
- * DELETE: Allows existing users to deregister
- * Request body: Bearer token
- * @param Username
- * @returns success message
- * @requires passport
- */
 // Delete a user by username
 app.delete(
   '/users/:Username',
@@ -397,14 +342,6 @@ app.delete(
   }
 );
 
-/**
- * DELETE: Allows users to remove a movie from their list of favorites
- * Request body: Bearer token
- * @param Username
- * @param movieId
- * @returns user object
- * @requires passport
- */
 // DELETE remove movies from users' arrays
 app.delete(
   '/users/:Username/movies/:MovieID',
